@@ -4,26 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- SEO: Title & Description -->
 <title>Free CV Optimizer — Tailor Your CV to Any Job | I Hear You</title>
-<meta name="description" content="Paste your CV and a job description. Our free AI tool rewrites and reorders your experience to match what employers are looking for — then download as a PDF. A free tool from I Hear You.">
+<meta name="description" content="Upload your CV or paste the text, add a job description, and our free AI tool rewrites your experience to match what employers are looking for. Download as PDF. A free tool from I Hear You.">
 <meta name="keywords" content="free CV optimizer, tailor CV to job description, CV rewriter, resume optimizer, job application help, CV to PDF, I Hear You">
 <meta name="author" content="I Hear You">
 <link rel="canonical" href="https://ihearyou-cv-optimizer.netlify.app">
 
-<!-- Open Graph (WhatsApp, Facebook, LinkedIn sharing) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ihearyou-cv-optimizer.netlify.app">
 <meta property="og:title" content="Free CV Optimizer — Tailor Your CV to Any Job">
-<meta property="og:description" content="Free AI tool that rewrites and reorders your CV to match any job description. Download the result as a PDF. From the team at I Hear You.">
+<meta property="og:description" content="Upload your CV or paste the text. Free AI tool that rewrites your CV to match any job description. Download as PDF. From the team at I Hear You.">
 <meta property="og:site_name" content="I Hear You">
 
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Free CV Optimizer — Tailor Your CV to Any Job">
 <meta name="twitter:description" content="Free AI tool that rewrites and reorders your CV to match any job description. Download the result as a PDF.">
 
-<!-- Structured Data for Google -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -42,14 +38,8 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-<!-- jsPDF for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- PDF.js for reading uploaded PDFs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<!-- Mammoth for reading uploaded Word documents -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
 <style>
@@ -86,7 +76,7 @@ body {
 .site-header {
   background: var(--pale);
   text-align: center;
-  padding: 2.5rem 2rem 1.75rem;
+  padding: 2.5rem 2rem 2rem;
   border-bottom: 2px solid var(--border);
 }
 
@@ -113,20 +103,28 @@ body {
   font-size: 0.97rem;
   font-weight: 600;
   color: var(--text-soft);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.1rem;
 }
 .header-tagline a { color: var(--green); font-weight: 800; text-decoration: underline; }
 .header-tagline a:hover { color: var(--green-hover); }
 
-.header-service-note {
-  font-size: 0.93rem;
-  color: var(--text-muted);
+.header-service-card {
+  display: inline-block;
+  background: var(--green);
+  border-radius: 12px;
+  padding: 0.9rem 1.75rem;
   max-width: 560px;
-  margin: 0 auto;
-  line-height: 1.6;
+  color: white;
+  font-size: 0.93rem;
+  line-height: 1.65;
 }
-.header-service-note a { color: var(--green); font-weight: 700; text-decoration: underline; }
-.header-service-note a:hover { color: var(--green-hover); }
+.header-service-card a {
+  color: var(--green-light);
+  font-weight: 800;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.header-service-card a:hover { color: white; }
 
 /* ── MAIN ── */
 main {
@@ -148,23 +146,9 @@ main {
 .page-desc {
   font-size: 0.97rem;
   color: var(--text-soft);
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   line-height: 1.7;
 }
-
-/* ── UPLOAD HINT ── */
-.upload-hint {
-  background: var(--white);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 0.9rem 1.2rem;
-  font-size: 0.88rem;
-  color: var(--text-soft);
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-.upload-hint strong { color: var(--text); }
-.upload-hint a { color: var(--green); font-weight: 700; text-decoration: underline; }
 
 /* ── INPUT PANELS ── */
 .panels {
@@ -183,53 +167,60 @@ main {
   margin-bottom: 0.5rem;
 }
 
-/* ── FILE UPLOAD AREA ── */
-.upload-area {
-  border: 2px dashed var(--border);
-  border-radius: 12px;
+/* ── COMBINED INPUT BOX ── */
+.input-box {
   background: var(--white);
-  padding: 1.5rem 1rem;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  margin-bottom: 0.5rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.input-box:focus-within { border-color: var(--green); }
+.input-box.has-file { border-color: var(--green); }
+
+.file-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1.5px solid var(--border);
+  background: var(--pale);
   position: relative;
 }
-.upload-area:hover { border-color: var(--green); background: #f5fbee; }
-.upload-area.has-file { border-color: var(--green); border-style: solid; background: #f5fbee; }
-.upload-area input[type="file"] {
+.file-bar input[type="file"] {
   position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
 }
-.upload-icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
-.upload-label { font-size: 0.88rem; font-weight: 700; color: var(--text-soft); }
-.upload-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
-.upload-filename { font-size: 0.85rem; font-weight: 700; color: var(--green); margin-top: 0.4rem; }
-
-.or-divider {
-  text-align: center;
-  font-size: 0.78rem;
+.file-bar-icon { font-size: 1.1rem; }
+.file-bar-label {
+  font-size: 0.82rem;
   font-weight: 700;
+  color: var(--text-soft);
+  flex: 1;
+}
+.file-bar-sub {
+  font-size: 0.75rem;
   color: var(--text-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin: 0.6rem 0;
+}
+.file-bar-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-top: 1px;
 }
 
 textarea {
   width: 100%;
-  height: 180px;
+  height: 220px;
   padding: 1rem 1.1rem;
   font-size: 0.93rem;
   font-family: 'Nunito', sans-serif;
   line-height: 1.65;
-  border: 2px solid var(--border);
-  border-radius: 12px;
+  border: none;
   background: var(--white);
   color: var(--text);
   resize: vertical;
-  transition: border-color 0.2s;
 }
-textarea:focus { outline: none; border-color: var(--green); }
+textarea:focus { outline: none; }
 textarea::placeholder { color: var(--text-muted); }
 
 .word-count {
@@ -434,50 +425,53 @@ textarea::placeholder { color: var(--text-muted); }
   <p class="header-tagline">
     A free tool from the team at I Hear You &nbsp;—&nbsp; <a href="https://www.ihearyou.chat">www.ihearyou.chat</a>
   </p>
-  <p class="header-service-note">
-    We guide people through the online world — documents, tech, apps, and anything confusing — live on a 30-minute video call. <a href="https://cal.com/ihearyou/30-minute-video-call" target="_blank">Book a session for $15 →</a>
-  </p>
+  <div class="header-service-card">
+    We guide people through the online world — documents, tech, apps, and anything confusing — live on a 30-minute video call.
+    &nbsp;<a href="https://cal.com/ihearyou/30-minute-video-call" target="_blank">Book a session for $15 →</a>
+  </div>
 </header>
 
 <!-- MAIN -->
 <main>
   <h1 class="page-title">Optimize your CV for any job</h1>
-  <p class="page-desc">Upload your CV or paste the text below, then add the job description. The tool rewrites and reorders your experience to match what the employer is looking for — nothing is invented, only highlighted differently. Download the result as a PDF.</p>
-
-  <div class="upload-hint">
-    <strong>Tip:</strong> If your CV has two columns, copying and pasting may mix up the text. Upload your CV as a PDF or Word file instead — the tool will read it correctly. If you need help with this, <a href="https://cal.com/ihearyou/30-minute-video-call" target="_blank">book a session with us</a>.
-  </div>
+  <p class="page-desc">Upload your CV and the job description, or paste the text directly. The tool rewrites and reorders your experience to match what the employer is looking for — then you can download the result as a PDF.</p>
 
   <div class="panels">
+
     <!-- CV INPUT -->
     <div>
       <div class="panel-label">Your CV</div>
-      <div class="upload-area" id="cv-upload-area">
-        <input type="file" id="cv-file" accept=".pdf,.doc,.docx" onchange="handleCvFile(this)">
-        <div class="upload-icon">📄</div>
-        <div class="upload-label">Upload your CV</div>
-        <div class="upload-sub">PDF or Word document</div>
-        <div class="upload-filename" id="cv-filename"></div>
+      <div class="input-box" id="cv-box">
+        <div class="file-bar">
+          <input type="file" id="cv-file" accept=".pdf,.doc,.docx" onchange="handleFile(this,'cv')">
+          <span class="file-bar-icon">📎</span>
+          <div>
+            <div class="file-bar-label">Upload PDF or Word file</div>
+            <div class="file-bar-name" id="cv-filename"></div>
+          </div>
+        </div>
+        <textarea id="cv-input" placeholder="…or paste your CV text here" oninput="updateCount('cv-input','cv-count')"></textarea>
       </div>
-      <div class="or-divider">or paste below</div>
-      <textarea id="cv-input" placeholder="Paste your CV text here — work experience, skills, education…" oninput="updateCount('cv-input','cv-count')"></textarea>
       <div class="word-count" id="cv-count"></div>
     </div>
 
     <!-- JOB DESCRIPTION INPUT -->
     <div>
       <div class="panel-label">Job Description</div>
-      <div class="upload-area" id="jd-upload-area">
-        <input type="file" id="jd-file" accept=".pdf,.doc,.docx" onchange="handleJdFile(this)">
-        <div class="upload-icon">💼</div>
-        <div class="upload-label">Upload job description</div>
-        <div class="upload-sub">PDF or Word document</div>
-        <div class="upload-filename" id="jd-filename"></div>
+      <div class="input-box" id="jd-box">
+        <div class="file-bar">
+          <input type="file" id="jd-file" accept=".pdf,.doc,.docx" onchange="handleFile(this,'jd')">
+          <span class="file-bar-icon">📎</span>
+          <div>
+            <div class="file-bar-label">Upload PDF or Word file</div>
+            <div class="file-bar-name" id="jd-filename"></div>
+          </div>
+        </div>
+        <textarea id="jd-input" placeholder="…or paste the job description here" oninput="updateCount('jd-input','jd-count')"></textarea>
       </div>
-      <div class="or-divider">or paste below</div>
-      <textarea id="jd-input" placeholder="Paste the job description here — responsibilities, requirements, keywords…" oninput="updateCount('jd-input','jd-count')"></textarea>
       <div class="word-count" id="jd-count"></div>
     </div>
+
   </div>
 
   <button class="optimize-btn" id="optimize-btn" onclick="optimize()">
@@ -518,10 +512,7 @@ textarea::placeholder { color: var(--text-muted); }
 </section>
 
 <script>
-// Set up PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-// ── FILE EXTRACTION ──
 
 async function extractTextFromPdf(file) {
   const arrayBuffer = await file.arrayBuffer();
@@ -530,8 +521,7 @@ async function extractTextFromPdf(file) {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const pageText = content.items.map(item => item.str).join(' ');
-    text += pageText + '\n';
+    text += content.items.map(item => item.str).join(' ') + '\n';
   }
   return text.trim();
 }
@@ -542,44 +532,25 @@ async function extractTextFromWord(file) {
   return result.value.trim();
 }
 
-async function extractText(file) {
-  const name = file.name.toLowerCase();
-  if (name.endsWith('.pdf')) return await extractTextFromPdf(file);
-  if (name.endsWith('.doc') || name.endsWith('.docx')) return await extractTextFromWord(file);
-  throw new Error('Unsupported file type');
-}
-
-async function handleCvFile(input) {
+async function handleFile(input, which) {
   const file = input.files[0];
   if (!file) return;
-  document.getElementById('cv-filename').textContent = '⏳ Reading file…';
+  const nameEl = document.getElementById(which + '-filename');
+  nameEl.textContent = '⏳ Reading…';
   try {
-    const text = await extractText(file);
-    document.getElementById('cv-input').value = text;
-    document.getElementById('cv-filename').textContent = '✓ ' + file.name;
-    document.getElementById('cv-upload-area').classList.add('has-file');
-    updateCount('cv-input', 'cv-count');
+    let text = '';
+    const name = file.name.toLowerCase();
+    if (name.endsWith('.pdf')) text = await extractTextFromPdf(file);
+    else if (name.endsWith('.doc') || name.endsWith('.docx')) text = await extractTextFromWord(file);
+    else throw new Error('unsupported');
+    document.getElementById(which + '-input').value = text;
+    nameEl.textContent = '✓ ' + file.name;
+    document.getElementById(which + '-box').classList.add('has-file');
+    updateCount(which + '-input', which + '-count');
   } catch(e) {
-    document.getElementById('cv-filename').textContent = '⚠ Could not read file — please paste the text instead.';
+    nameEl.textContent = '⚠ Could not read file — please paste the text instead.';
   }
 }
-
-async function handleJdFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  document.getElementById('jd-filename').textContent = '⏳ Reading file…';
-  try {
-    const text = await extractText(file);
-    document.getElementById('jd-input').value = text;
-    document.getElementById('jd-filename').textContent = '✓ ' + file.name;
-    document.getElementById('jd-upload-area').classList.add('has-file');
-    updateCount('jd-input', 'jd-count');
-  } catch(e) {
-    document.getElementById('jd-filename').textContent = '⚠ Could not read file — please paste the text instead.';
-  }
-}
-
-// ── UI HELPERS ──
 
 function updateCount(inputId, countId) {
   const val = document.getElementById(inputId).value.trim();
@@ -598,34 +569,24 @@ function copyCv() {
   const text = document.getElementById('cv-output').textContent;
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copy-btn');
-    btn.textContent = '✓  Copied!';
+    btn.innerHTML = '✓ &nbsp;Copied!';
     setTimeout(() => { btn.innerHTML = '✓ &nbsp;Copy to clipboard'; }, 2000);
   });
 }
 
-// ── PDF DOWNLOAD ──
-
 function downloadPdf() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-
   const text = document.getElementById('cv-output').textContent;
   const lines = text.split('\n');
-
   const marginLeft = 20;
   const marginTop = 20;
-  const pageWidth = 210;
-  const maxWidth = pageWidth - marginLeft * 2;
+  const maxWidth = 170;
   let y = marginTop;
-
-  doc.setFont('helvetica');
 
   lines.forEach(line => {
     const trimmed = line.trim();
-
-    // Detect section headings (ALL CAPS lines or lines ending with :)
     const isHeading = trimmed === trimmed.toUpperCase() && trimmed.length > 2 && trimmed.length < 60;
-
     if (isHeading && trimmed.length > 0) {
       if (y > 260) { doc.addPage(); y = marginTop; }
       y += 4;
@@ -633,10 +594,9 @@ function downloadPdf() {
       doc.setFont('helvetica', 'bold');
       doc.text(trimmed, marginLeft, y);
       y += 2;
-      // Underline
       doc.setDrawColor(74, 107, 56);
       doc.setLineWidth(0.4);
-      doc.line(marginLeft, y, pageWidth - marginLeft, y);
+      doc.line(marginLeft, y, 190, y);
       y += 5;
     } else if (trimmed.length === 0) {
       y += 4;
@@ -651,11 +611,8 @@ function downloadPdf() {
       });
     }
   });
-
   doc.save('optimized-cv.pdf');
 }
-
-// ── MAIN OPTIMIZE FUNCTION ──
 
 async function optimize() {
   const cv = document.getElementById('cv-input').value.trim();
@@ -693,7 +650,7 @@ Rules:
 - Shorten or remove sections that are not relevant to this role.
 - Keep a professional, warm tone throughout.
 - Format section headings in ALL CAPS (e.g. WORK EXPERIENCE, SKILLS, EDUCATION).
-- Provide 4 to 6 insights.
+- Provide 4 to 6 insights, no more.
 
 CV:
 ${cv}

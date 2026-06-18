@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Optimizer — A free tool from I Hear You</title>
+<meta name="description" content="Paste your CV and a job description. Our free AI tool rewrites and reorders your experience to match what the employer is looking for.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pale:         #EAF3DC;
+  --header-strip: #CDDEB4;
+  --green:        #4A6B38;
+  --green-hover:  #354E28;
+  --green-light:  #6dbf7e;
+  --near-black:   #1a1a1a;
+  --text:         #1C1E14;
+  --text-soft:    #4A4C3A;
+  --text-muted:   #888878;
+  --border:       #C5D5AC;
+  --white:        #FFFFFF;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--pale);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+/* ── BIG HEADER ── */
+.site-header {
+  background: var(--pale);
+  text-align: center;
+  padding: 2.5rem 2rem 2rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.logo-block {
+  display: inline-block;
+  background: var(--green);
+  border-radius: 12px;
+  padding: 0.7rem 2.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.logo-block .logo-text {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.logo-block .logo-text .white { color: #ffffff; }
+.logo-block .logo-text .lime  { color: var(--green-light); }
+
+.header-tagline {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  margin-bottom: 0;
+}
+
+.header-tagline a {
+  color: var(--green);
+  font-weight: 800;
+  text-decoration: underline;
+}
+.header-tagline a:hover { color: var(--green-hover); }
+
+
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  width: 100%;
+}
+
+.page-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
+}
+
+.page-desc {
+  font-size: 0.97rem;
+  color: var(--text-soft);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+/* ── INPUT PANELS ── */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.panel-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  width: 100%;
+  height: 260px;
+  padding: 1rem 1.1rem;
+  font-size: 0.95rem;
+  font-family: 'Nunito', sans-serif;
+  line-height: 1.65;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--text);
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+textarea:focus { outline: none; border-color: var(--green); }
+textarea::placeholder { color: var(--text-muted); }
+
+.word-count {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 0.3rem;
+  min-height: 1.1em;
+}
+
+/* ── BUTTON ── */
+.optimize-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 2rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: white;
+  background: var(--green);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  margin-bottom: 2.5rem;
+}
+.optimize-btn:hover { background: var(--green-hover); transform: translateY(-1px); }
+.optimize-btn:active { transform: scale(0.99); }
+.optimize-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ── RESULTS ── */
+.results { display: none; }
+.results.visible { display: block; }
+
+.tab-bar {
+  background: var(--header-strip);
+  border: 2px solid var(--border);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  gap: 4px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s;
+}
+.tab-btn.active { background: var(--green); color: white; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.result-box {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 1.5rem;
+  min-height: 220px;
+}
+
+.cv-text {
+  font-size: 0.93rem;
+  line-height: 1.75;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1.25rem;
+  padding: 0.55rem 1.3rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--green);
+  background: var(--pale);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.copy-btn:hover { background: var(--header-strip); }
+
+/* ── INSIGHTS ── */
+.insights { display: flex; flex-direction: column; gap: 12px; }
+
+.insight-card {
+  background: var(--pale);
+  border-left: 4px solid var(--green);
+  border-radius: 0 10px 10px 0;
+  padding: 0.85rem 1.1rem;
+}
+.insight-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.insight-text {
+  font-size: 0.93rem;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+/* ── LOADING DOTS ── */
+.dots { display: inline-flex; gap: 5px; align-items: center; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: white; animation: blink 1.2s ease-in-out infinite; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+
+.error-msg {
+  background: #fdf0f0;
+  border: 1px solid #f5c6c6;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  color: #8b2e2e;
+  font-size: 0.93rem;
+}
+
+/* ── CTA SECTION (matches Lovable tool) ── */
+.cta-section {
+  background: var(--near-black);
+  color: white;
+  text-align: center;
+  padding: 3.5rem 2rem;
+}
+
+.cta-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.cta-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-light);
+  margin-bottom: 1rem;
+}
+
+.cta-title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.cta-desc {
+  font-size: 1rem;
+  color: #aab8a0;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.cta-btn {
+  display: inline-block;
+  background: var(--green-light);
+  color: var(--near-black);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 0.9rem 2.5rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  margin-bottom: 1.25rem;
+}
+.cta-btn:hover { background: #88d49a; transform: translateY(-1px); }
+
+.cta-site-link {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 0.75rem;
+}
+.cta-site-link a { color: #aab8a0; text-decoration: underline; }
+.cta-site-link a:hover { color: var(--green-light); }
+
+/* ── FOOTER (matches Lovable tool) ── */
+footer {
+  background: var(--pale);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 1.5rem 2rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.9;
+}
+
+footer a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 700;
+}
+footer a:hover { text-decoration: underline; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .panels { grid-template-columns: 1fr; }
+  main { padding: 2rem 1.25rem 3rem; }
+  .logo-block { padding: 0.6rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- BIG HEADER -->
+<header class="site-header">
+  <a href="https://www.ihearyou.chat" style="text-decoration:none;">
+    <div class="logo-block">
+      <div class="logo-text">
+        <span class="white">I HEAR</span><span class="lime">You</span>
+      </div>
+    </div>
+  </a>
+  <p class="header-tagline">
+    A free tool from the team at I Hear You &nbsp;—&nbsp; <a href="https://www.ihearyou.chat">www.ihearyou.chat</a>
+  </p>
+</header>
+
+<!-- MAIN -->
+<main>
+  <h1 class="page-title">Optimize your CV for any job</h1>
+  <p class="page-desc">Paste your CV and the job description below. The tool rewrites and reorders your experience to match what the employer is looking for — nothing is invented, only highlighted differently.</p>
+
+  <div class="panels">
+    <div>
+      <div class="panel-label">Your CV</div>
+      <textarea id="cv-input" placeholder="Paste your CV here — work experience, skills, education…" oninput="updateCount('cv-input','cv-count')"></textarea>
+      <div class="word-count" id="cv-count"></div>
+    </div>
+    <div>
+      <div class="panel-label">Job Description</div>
+      <textarea id="jd-input" placeholder="Paste the job description here — responsibilities, requirements, keywords…" oninput="updateCount('jd-input','jd-count')"></textarea>
+      <div class="word-count" id="jd-count"></div>
+    </div>
+  </div>
+
+  <button class="optimize-btn" id="optimize-btn" onclick="optimize()">
+    ✦ &nbsp;Optimize my CV for this role
+  </button>
+
+  <div class="results" id="results">
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-cv" onclick="switchTab('cv')">Optimized CV</button>
+      <button class="tab-btn" id="tab-why" onclick="switchTab('why')">Why these changes</button>
+    </div>
+    <div class="result-box">
+      <div class="tab-panel active" id="panel-cv">
+        <div class="cv-text" id="cv-output"></div>
+        <button class="copy-btn" onclick="copyCv()" id="copy-btn">✓ &nbsp;Copy to clipboard</button>
+      </div>
+      <div class="tab-panel" id="panel-why">
+        <div class="insights" id="insights-output"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">A free tool from the team at I Hear You</div>
+    <h2 class="cta-title">Still have questions? Talk to a real person.</h2>
+    <p class="cta-desc">Our agents explain documents, guide you in the online world, tech help, apps and anything else you find confusing — live on a 30-minute video call.</p>
+    <a href="https://cal.com/ihearyou/30-minute-video-call" target="_blank" class="cta-btn">Book a 30-minute video call — $15</a>
+    <div class="cta-site-link">Learn more about our service I Hear You at <a href="https://www.ihearyou.chat" target="_blank">www.ihearyou.chat</a></div>
+    <p style="margin-top:2rem; font-size:0.78rem; color:#555; line-height:1.6;">This tool uses AI to suggest edits. Always review the output before sending your CV.<br>© 2026 I Hear You.</p>
+  </div>
+</section>
+
+
+
+<script>
+function updateCount(inputId, countId) {
+  const val = document.getElementById(inputId).value.trim();
+  const words = val ? val.split(/\s+/).length : 0;
+  document.getElementById(countId).textContent = words > 0 ? words + ' words' : '';
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-cv').classList.toggle('active', tab === 'cv');
+  document.getElementById('tab-why').classList.toggle('active', tab === 'why');
+  document.getElementById('panel-cv').classList.toggle('active', tab === 'cv');
+  document.getElementById('panel-why').classList.toggle('active', tab === 'why');
+}
+
+function copyCv() {
+  const text = document.getElementById('cv-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓  Copied!';
+    setTimeout(() => { btn.innerHTML = '✓ &nbsp;Copy to clipboard'; }, 2000);
+  });
+}
+
+async function optimize() {
+  const cv = document.getElementById('cv-input').value.trim();
+  const jd = document.getElementById('jd-input').value.trim();
+  if (!cv) { alert('Please paste your CV first.'); return; }
+  if (!jd) { alert('Please paste the job description first.'); return; }
+
+  const btn = document.getElementById('optimize-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span> &nbsp;Analysing…';
+
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('cv-output').textContent = '';
+  document.getElementById('insights-output').innerHTML = '';
+
+  const prompt = `You are a professional CV consultant. Optimize the CV below for the given job description.
+
+Respond ONLY with valid JSON — no preamble, no markdown, no code fences.
+
+JSON shape:
+{
+  "optimized_cv": "the full rewritten CV as plain text",
+  "insights": [
+    { "tag": "HIGHLIGHTED", "text": "What was moved up and why" },
+    { "tag": "REFRAMED", "text": "How a description was reworded to match the job" },
+    { "tag": "DE-EMPHASISED", "text": "What was shortened or moved down and why" }
+  ]
+}
+
+Rules:
+- Never invent experience. Only reorder, reword, and reframe what is already there.
+- Lead with the most relevant experience for this specific role.
+- Use language and keywords from the job description where truthful.
+- Strengthen verbs and quantify where the original already implies numbers.
+- Shorten or remove sections that are not relevant to this role.
+- Keep a professional, warm tone throughout.
+- Provide 4 to 6 insights.
+
+CV:
+${cv}
+
+JOB DESCRIPTION:
+${jd}`;
+
+  try {
+    const response = await fetch('/.netlify/functions/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 3000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    document.getElementById('cv-output').textContent = parsed.optimized_cv;
+    document.getElementById('insights-output').innerHTML = parsed.insights.map(i => `
+      <div class="insight-card">
+        <div class="insight-tag">${i.tag}</div>
+        <div class="insight-text">${i.text}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('results').classList.add('visible');
+    switchTab('cv');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    document.getElementById('cv-output').innerHTML = '<div class="error-msg">Something went wrong. Please check your API key is correctly set, then try again. If your CV or job description is very long, try shortening one of them.</div>';
+    document.getElementById('results').classList.add('visible');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✦ &nbsp;Optimize my CV for this role';
+  }
+}
+</script>
+
+</body>
+</html>
